@@ -39,5 +39,5 @@ describe('Continue', function () {
       
       expect(chain().method1.toString()).to.equal(method.toString());
     });
-  })
+  });
 });
