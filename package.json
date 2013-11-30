@@ -17,6 +17,10 @@
   },
   "devDependencies": {
     "expect.js": "~0.2.0",
-    "mocha": "~1.14.0"
+    "mocha": "~1.14.0",
+    "async": "~0.2.9"
+  },
+  "dependencies": {
+    "promise": "~3.2.0"
   }
 }
