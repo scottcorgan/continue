@@ -100,7 +100,7 @@ var someValue = [1,2,3,4,5];
 chain(someValue);
 ```
 
-as a **Function**
+**Function**
 
 ```js
 var Continue = require('continue');
@@ -131,6 +131,20 @@ A callback function that is passed the following parameters
 * `items` - any value that you would like passed to the first method in the chain
 * `iterator` - the method called on the value from the previous method that performs some sort of user defined operation
 * `next` - the callback once all items in the list or collection have been processed.
+
+#### For Example:
+
+```js
+var Continue = require('continue');
+var chain = Continue();
+
+// Add methods to our chain sequence
+chain.add('map', function (items, iterator, next) {
+  iterator(items, function (err, processItems) {
+    next(err, processItems);
+  });
+});
+```
 
 ## chain sequence methods
 
