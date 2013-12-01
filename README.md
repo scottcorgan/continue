@@ -104,11 +104,19 @@ This is called once all chained methods have processed the initial value, unless
 
 **errorCallback**
 
-THis is called if an error occurs anywhere when processing the initial value in any of the chainable methods. If an error occurs, all processing stops.
+This is called if an error occurs anywhere when processing the initial value in any of the chainable methods. If an error occurs, all processing stops.
 
 ### drain()
 
 Runs each method in the chain b draining the chain queue on next tick.
+
+
+## TODO
+
+* more detailed documentation
+* allow callbacks on each chained method
+* allow promises to be passed in as inititial value to chain
+* **Continue** module examples
 
 
 ## Run Tests
