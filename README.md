@@ -68,6 +68,50 @@ chain(list)
   });
 ```
 
+## chain
+
+The instance value returned from calling `Continue()` is both a function and an object. The object is the instance and the function returns the chain sequence.
+
+`chain()` supports the follow as initial values to start the chain:
+
+* **Primitive** - strings, numbers, etc.
+* **Array** - an array of primitives or objects
+* **Function** - a function that is passed a `next` callback that must be called with the following: `next(err, value)`. The value passed as the second argument becomes the initial value of the chain.
+
+###For example:
+
+**Primitive**
+
+```js
+var Continue = require('continue');
+var chain = Continue();
+
+var someValue = 'my value';
+chain(someValue);
+```
+
+**Array**
+
+```js
+var Continue = require('continue');
+var chain = Continue();
+
+var someValue = [1,2,3,4,5];
+chain(someValue);
+```
+
+as a **Function**
+
+```js
+var Continue = require('continue');
+var chain = Continue();
+
+chain(function (next) {
+  var someValue = 'my value';
+  next(null, someValue);
+});
+```
+
 ## instance methods
 
 These methods are available on the `chain` variable.
