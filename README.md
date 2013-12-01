@@ -42,7 +42,7 @@ chain.add('filter', function (items, iterator, next) {
   });
 });
 
-// Use are chain
+// Use our chain
 var list = [
   {
     name: 'John',
