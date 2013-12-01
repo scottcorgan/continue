@@ -11,8 +11,8 @@ npm install continue --save
 ## Usage
 
 ```js
-var continue = require('continue');
-var chain = continue();
+var Continue = require('continue');
+var chain = Continue();
 var async = require('async'); // <~~ simply for usage example
 
 // Add methods to our chain sequence
