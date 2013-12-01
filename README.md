@@ -63,10 +63,14 @@ chain(list)
   })
   .then(function (items) {
     // items now equals: [20, 25]
+  }, function () {
+    // oops, an error may have occured
   });
 ```
 
 ## Methods
+
+###
 
 ## Run Tests
 
