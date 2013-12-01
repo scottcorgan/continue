@@ -68,9 +68,30 @@ chain(list)
   });
 ```
 
-## Methods
+## instance methods
 
-###
+### add(methodName, methodTask)
+
+Composes a chainable method on the chain. The method is added for all instances of that particular chain.
+
+**methodName**
+
+A string that will be used as the method name
+
+**methodTask**
+
+A callback function that is passed the following parameters
+
+* `items` - any value that you would like passed to the first method in the chain
+* `iterator` - the method called on the value from the previous method that performs some sort of user defined operation
+* `next` - the callback once all items in the list or collection have been processed.
+
+## chain sequence methods
+
+### then()
+
+### drain()
+
 
 ## Run Tests
 

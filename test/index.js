@@ -1,5 +1,5 @@
-var continue = require('../');
-var chain = continue();
+var Continue = require('../');
+var chain = Continue();
 var async = require('async');
 
 chain.add('each', function (items, iterator, next) {

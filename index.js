@@ -11,6 +11,21 @@ var Chain = function () {
   
   chainInstance._queue = [];
   
+  chainInstance.drain = function () {
+    _runTask(chainInstance._queue);
+    
+    function _runTask (queue) {
+      var sequenceMethod = queue.shift();
+      
+      if (!sequenceMethod) return resolve(sequence._items);
+      
+      sequenceMethod.task.call(sequence, sequence._items, sequenceMethod.iterator, function  (err, items) {
+        sequence._items = items;
+        _runTask(queue);
+      });
+    }
+  }.bind(sequence);
+  
   var sequence = function (list) {
     
     // Callback
@@ -19,14 +34,14 @@ var Chain = function () {
         // if (err) return sequence.triggerError(err, [], 'start');
         
         sequence._items = items;
-        process.nextTick(sequence.drain);
+        process.nextTick(chainInstance.drain);
       });
     }
     
     // Array
     if (typeof list === 'object' && list.length >= 0) {
       sequence._items = list;
-      process.nextTick(sequence.drain);
+      process.nextTick(chainInstance.drain);
     }
     
     return chainInstance;
@@ -42,21 +57,6 @@ var Chain = function () {
       return chainInstance;
     }
   };
-  
-  sequence.drain = function () {
-    _runTask(chainInstance._queue);
-    
-    function _runTask (queue) {
-      var sequenceMethod = queue.shift();
-      
-      if (!sequenceMethod) return resolve(sequence._items);
-      
-      sequenceMethod.task.call(sequence, sequence._items, sequenceMethod.iterator, function  (err, items) {
-        sequence._items = items;
-        _runTask(queue);
-      });
-    }
-  }.bind(sequence);
   
   sequence.triggerError = function (err, item, fnName) {
     // TODO: implement
