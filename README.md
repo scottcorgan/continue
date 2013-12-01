@@ -164,6 +164,22 @@ This is called once all chained methods have processed the initial value, unless
 
 This is called if an error occurs anywhere when processing the initial value in any of the chainable methods. If an error occurs, all processing stops.
 
+#### For Example:
+
+```js
+var Continue = require('continue');
+var chain = Continue();
+
+var someValue = 'my value';
+chain(someValue)
+  .someChainableMethod(function (value, next) {
+    next(null, value + 's');
+  })
+  .then(function (processedValue) {
+    // processedValue == my values
+  });
+```
+
 ### drain()
 
 Runs each method in the chain b draining the chain queue on next tick.
