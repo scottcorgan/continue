@@ -1,7 +1,7 @@
 {
   "name": "continue",
-  "version": "0.0.0",
-  "description": "continue ========",
+  "version": "0.1.0",
+  "description": "Compose chainable async methods",
   "main": "index.js",
   "scripts": {
     "test": "node_modules/.bin/mocha test/"

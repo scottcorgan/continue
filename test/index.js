@@ -1,26 +1,26 @@
-var Continue = require('../');
+var continue = require('../');
+var chain = continue();
 var async = require('async');
 
-var chain = Continue();
-
-chain.add('each', function (items, filterFn, next) {
-  async.each(items, filterFn, next);
+chain.add('each', function (items, iterator, next) {
+  async.each(items, iterator, next);
 });
 
-chain.add('map', function (items, filterFn, next) {
-  async.map(items, filterFn, next);
+chain.add('map', function (items, iterator, next) {
+  async.map(items, iterator, next);
 });
 
-chain.add('filter', function (items, filterFn, next) {
+chain.add('filter', function (items, iterator, next) {
   var self = this;
   var error;
   
   async.filter(items, function (item, callback) {
-    filterFn(item, function (err, matched) {
+    iterator(item, function (err, matched) {
       if (err) {
         error = err;
         return self.triggerError(err, item, 'filter');
       }
+      
       callback(matched);
     });
   }, function (filteredItems) {
@@ -41,27 +41,17 @@ var list = [
 
 // chain(function (next) {
 //   next(null, list);
-// }).map(function (item, next) {
-//   item.dance = 'fun';
-//   next(null, item);
-// }).filter(function (item, next) {
-//   next('asdf', item.name == 'lindsay');
-// }).then(function (items) {
-//   console.log(items);
-// });
-
+// })
 chain(list)
-.filter(function (item, next) {
-  next(null, true);
-})
-.map(function (item, next) {
-  next(null, item.age);
-})
-.then(function (items) {
-  console.log(items);
-}, function (errs) {
-  console.log(errs);
-});
+  .filter(function (item, next) {
+    next(null, item.age == 29);
+  })
+  .map(function (item, next) {
+    next(null, item.name);
+  })
+  .then(function (items) {
+    console.log('THEN:', items);
+  });
 
 
 

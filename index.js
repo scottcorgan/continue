@@ -1,62 +1,65 @@
 var Promise = require('promise');
 
 var Chain = function () {
-  var sequence = function (items) {
-    
-    // TODO: make starting with a method work
-    // optionally allow starting with just an array/collection
-    
-    // listFn(function (err, items) {
-    //   if (err) return sequence.triggerError(err, [], 'start');
-    //   sequence._items = items;
-    // });
-
-    sequence._items = items;
-    return sequence._methods;
-  };
-
-  sequence._errors = [];
-
-  sequence._methods = {
-    then: function (success, error) {
-      if (success && !sequence._errors.length) return success(sequence._items);
-      if (error) error(sequence._errors);
-      
-      sequence._errors = [];
-    }
-  };
+  var resolve;
+  var reject;
   
-  sequence.triggerError = function (err, item, fnName) {
-    // TODO: stop all method chain calls and
-    // perform the error callback
-    
-    sequence._errors.push({
-      error: err,
-      item: item,
-      fnName: fnName
-    });
-  };
+  var chainInstance = new Promise(function (_resolve, _reject) {
+    resolve = _resolve;
+    reject = _reject;
+  });
   
-  sequence.getMethodList = function () {
-    return sequence._methods;
-  };
-
-  sequence.getMethod = function (name) {
-    return sequence._methods[name];
-  };
-
-  sequence.add = function (name, fn) {
-    sequence._methods[name] = function (filterFn) {
-      fn.call(sequence, sequence._items, filterFn, function  (err, items) {
+  chainInstance._queue = [];
+  
+  var sequence = function (list) {
+    
+    // Callback
+    if (typeof list === 'function') {
+      list(function (err, items) {
+        // if (err) return sequence.triggerError(err, [], 'start');
+        
         sequence._items = items;
+        process.nextTick(sequence.drain);
+      });
+    }
+    
+    // Array
+    if (typeof list === 'object' && list.length >= 0) {
+      sequence._items = list;
+      process.nextTick(sequence.drain);
+    }
+    
+    return chainInstance;
+  };
+
+  sequence.add = function (name, task) {
+    chainInstance[name] = function (iterator) {
+      chainInstance._queue.push({
+        iterator: iterator,
+        task: task
       });
       
-      return sequence._methods;
+      return chainInstance;
     }
   };
   
-  sequence.start = function () {
-    console.log(start);
+  sequence.drain = function () {
+    _runTask(chainInstance._queue);
+    
+    function _runTask (queue) {
+      var sequenceMethod = queue.shift();
+      
+      if (!sequenceMethod) return resolve(sequence._items);
+      
+      sequenceMethod.task.call(sequence, sequence._items, sequenceMethod.iterator, function  (err, items) {
+        sequence._items = items;
+        _runTask(queue);
+      });
+    }
+  }.bind(sequence);
+  
+  sequence.triggerError = function (err, item, fnName) {
+    // TODO: implement
   };
 
   return sequence;
@@ -68,47 +71,3 @@ var Continue = function () {
 
 Continue.Chain = Chain;
 module.exports = Continue;
-
-
-
-
-/*
-
- // instantiate a new continue chain
- var chain = Continue({
- map: function (asdf, qer, zxcv, next) {
- next();
-  }
-});
-
-chain.add('filter', function(items, something, next) {
-  // filter logic
-  var filteredItems = items;
-  
-  next(err, filteredItems);
-
- });
-
-
-chain([]).filter(function (item, next) {
-  
-}).then(function (items) {
-  
-});
-
-
-// For During module
-module.exports = function (list) {
-  return chain(function (next) {
-    next(null, list);
-  });
-}
-
-
-chain(function (next) {
-  var list = [];
-  next(null, list)
-}).filter().then();
-
-
- */
